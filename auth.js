@@ -10,6 +10,8 @@ module.exports = function(req, res, next) {
         req.body = verified
         next()
     } catch (err) {
-
+        res.json({
+            message: 'Access denied'
+        })
     }
 }

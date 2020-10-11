@@ -21,34 +21,25 @@ router.post('/', (req, res) => {
             ":user_id": req.body.user_id
         }
     }
-    dynamoDB.query(param, (err, data) => {
+    dynamoDB.query(param, (err, data) => { //query  user with user_id
         if (err) res.send(err)
         if (data.Count == 0) {
             res.send({
-                message: "wrong user_id",
+                message: "user doesn't exist",
             });
         } else {
             if (req.body.password == data.Items[0].password) {
-                if (data.Items[0].admin == true) {
-                    user = {
-                        admin: true,
-                        user_id: req.body.user_id,
-                    }
-                } else user = {
-                    admin: false,
+                console.log(data.Items[0])
+                user = {
                     user_id: req.body.user_id
                 }
-
                 const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
-                res.header('auth-token', accessToken).json({
+                res.header('auth-token', accessToken).json({ //send token to client
                     message: 'logged in',
                     accessToken: accessToken
                 });
-            } else {
-                res.send({
-                    message: "wrong password"
-                });
-            }
+            } else { res.json({ message: "wrong password" }) }
+
         }
     })
 })

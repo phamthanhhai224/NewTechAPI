@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router();
 const aws = require("aws-sdk");
 const verify = require('../auth')
+const role_auth = require('../role_auth')
     // config AWS
 let awsConfig = {
     region: "us-east-2",
@@ -12,11 +13,9 @@ let awsConfig = {
 aws.config.update(awsConfig);
 const dynamoDB = new aws.DynamoDB.DocumentClient();
 router.use(verify)
+router.use(role_auth)
     // Get all the user
 router.get("/", (req, res) => {
-    if (req.body.admin == false) return res.json({
-        message: "you dont have permission!!"
-    })
 
     let param = {
         TableName: "users"
@@ -32,6 +31,9 @@ router.get("/", (req, res) => {
 
 // get One user with user_id
 router.get('/:user_id', (req, res) => {
+    if (req.body.admin == false) return res.json({
+        message: "you dont have permission!!"
+    })
     let param = {
         TableName: "users",
         Key: {
@@ -51,6 +53,9 @@ router.get('/:user_id', (req, res) => {
 
 //DELETE one user
 router.delete('/:user_id', (req, res) => {
+    if (req.body.admin == false) return res.json({
+        message: "you dont have permission!!"
+    })
     let param = {
         TableName: "users",
         Key: {
