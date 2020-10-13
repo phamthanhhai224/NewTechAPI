@@ -22,7 +22,7 @@ router.get("/", (req, res) => {
     }
     dynamoDB.scan(param, (err, data) => {
         if (err) {
-            res.status(401).send(err)
+            res.status(401).json({ errorCode: 401 }) // khong co quyen
         }
         res.json(data.Items)
     })
@@ -32,8 +32,8 @@ router.get("/", (req, res) => {
 // get One user with user_id
 router.get('/:user_id', (req, res) => {
     if (req.body.admin == false) return res.json({
-        message: "you dont have permission!!"
-    })
+            message: "you dont have permission!!"
+        }) // cái này không chạy đâu
     let param = {
         TableName: "users",
         Key: {
@@ -42,8 +42,8 @@ router.get('/:user_id', (req, res) => {
     }
     dynamoDB.get(param, (err, data) => {
         if (err) res.json(err)
-        if (data == null) res.send({
-            message: "Cant find user"
+        if (data == null) res.status(404).send({
+            errorCode: 404 // khong ton tai user
         })
         else {
             res.json(data.Item)
@@ -54,8 +54,8 @@ router.get('/:user_id', (req, res) => {
 //DELETE one user
 router.delete('/:user_id', (req, res) => {
     if (req.body.admin == false) return res.json({
-        message: "you dont have permission!!"
-    })
+            message: "you dont have permission!!"
+        }) //cái này không chạy luôn
     let param = {
         TableName: "users",
         Key: {
@@ -64,8 +64,8 @@ router.delete('/:user_id', (req, res) => {
     }
     dynamoDB.delete(param, (err, data) => {
         if (err) res.json(err)
-        res.json({
-            message: "Delete success"
+        res.status(200).json({
+            errorCode: 200
         })
     })
 })

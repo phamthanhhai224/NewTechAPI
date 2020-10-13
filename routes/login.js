@@ -24,8 +24,8 @@ router.post('/', (req, res) => {
     dynamoDB.query(param, (err, data) => { //query  user with user_id
         if (err) res.send(err)
         if (data.Count == 0) {
-            res.send({
-                message: "user doesn't exist",
+            res.status(404).json({
+                errorCode: 404, //Khong tim thay user
             });
         } else {
             if (req.body.password == data.Items[0].password) {
@@ -35,10 +35,10 @@ router.post('/', (req, res) => {
                 }
                 const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
                 res.header('auth-token', accessToken).json({ //send token to client
-                    message: 'logged in',
+                    errorCode: 200,
                     accessToken: accessToken
                 });
-            } else { res.json({ message: "wrong password" }) }
+            } else { res.status(401).json({ errorCode: 401 }) } //Sai password
 
         }
     })

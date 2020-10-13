@@ -15,13 +15,13 @@ module.exports = function(req, res, next) {
         }
     }
     dynamoDB.get(param, (err, data) => {
-        if (err) return res.json({ message: "cant find user" })
+        if (err) return res.json({ message: "cant find user" }) // cái này không chạy đâu, đừng quan tâm
         let user = data.Item
         if (user.admin) {
             next()
             return
         }
-        res.json({ message: "you dont have permission" })
+        res.status(403).json({ errorCode: 403 }) // 403 : Request hợp lệ, nhưng không có đủ quyền truy cập
 
     })
 }
