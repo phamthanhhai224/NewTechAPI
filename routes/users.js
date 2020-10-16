@@ -22,9 +22,13 @@ router.get("/", (req, res) => {
     }
     dynamoDB.scan(param, (err, data) => {
         if (err) {
-            res.status(401).json({ errorCode: 401 }) // khong co quyen
+            res.json({ errorCode: 401 }) // khong co quyen
         }
-        res.json(data.Items)
+        let resData = []
+        data.Items.forEach(Item => {
+            if (!Item.admin) resData.push(Item)
+        });
+        res.json(resData)
     })
 })
 
@@ -68,8 +72,5 @@ router.delete('/:user_id', (req, res) => {
             errorCode: 200
         })
     })
-})
-router.use((req, res, next) => {
-
 })
 module.exports = router;

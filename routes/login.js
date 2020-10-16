@@ -24,12 +24,11 @@ router.post('/', (req, res) => {
     dynamoDB.query(param, (err, data) => { //query  user with user_id
         if (err) res.send(err)
         if (data.Count == 0) {
-            res.status(404).json({
+            res.json({
                 errorCode: 404, //Khong tim thay user
             });
         } else {
             if (req.body.password == data.Items[0].password) {
-                console.log(data.Items[0])
                 user = {
                     user_id: req.body.user_id
                 }
@@ -38,7 +37,7 @@ router.post('/', (req, res) => {
                     errorCode: 200,
                     accessToken: accessToken
                 });
-            } else { res.status(401).json({ errorCode: 401 }) } //Sai password
+            } else { res.json({ errorCode: 401 }) } //Sai password
 
         }
     })

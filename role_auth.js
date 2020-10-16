@@ -21,7 +21,7 @@ module.exports = function(req, res, next) {
             next()
             return
         }
-        res.status(403).json({ errorCode: 403 }) // 403 : Request hợp lệ, nhưng không có đủ quyền truy cập
+        res.json({ errorCode: 403 }) // 403 : Request hợp lệ, nhưng không có đủ quyền truy cập
 
     })
 }
