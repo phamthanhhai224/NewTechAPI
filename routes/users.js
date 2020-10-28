@@ -3,6 +3,7 @@ const router = express.Router();
 const aws = require("aws-sdk");
 const verify = require('../auth')
 const role_auth = require('../role_auth')
+const nodeMailer = require('nodemailer')
     // config AWS
 let awsConfig = {
     region: "us-east-2",
@@ -59,7 +60,7 @@ router.get('/:user_id', (req, res) => {
 router.delete('/:user_id', (req, res) => {
     if (req.body.admin == false) return res.json({
             message: "you dont have permission!!"
-        }) //cái này không chạy luôn
+        }) //cái này không chạy luôn,đừng quan tâm
     let param = {
         TableName: "users",
         Key: {
@@ -68,9 +69,64 @@ router.delete('/:user_id', (req, res) => {
     }
     dynamoDB.delete(param, (err, data) => {
         if (err) res.json(err)
-        res.status(200).json({
+        res.json({
             errorCode: 200
         })
+    })
+})
+
+/* method POST
+    des: reset old password with new randomize password 
+    route : users/reset
+*/
+router.post('/reset', (req, res) => {
+    let param = {
+        TableName: "users",
+        Key: {
+            user_id: req.body.user_id
+        }
+    }
+    dynamoDB.get(param, (err, data) => {
+        if (err) res.json({ errorCode: 500 })
+        else {
+            let updateUser = data.Item
+            updateUser.password = Math.random().toString(36).slice(-8)
+            let param = {
+                TableName: "users",
+                Item: updateUser
+
+            }
+            const transporter = nodeMailer.createTransport({
+                service: 'Gmail',
+                auth: {
+                    user: process.env.NEW_TECH_MAIL,
+                    pass: process.env.NEW_TECH_MAIL_PASSWORD
+                }
+            })
+            let mainOption = {
+                from: 'New Tech Team',
+                to: updateUser.email,
+                subject: "We just reset your password",
+                text: `Your new password is : ${updateUser.password}
+                        please change your password!!`
+            }
+            transporter.sendMail(mainOption, (err, info) => {
+                if (err) {
+                    res.json({
+                        errorCode: 500,
+                        error: err
+                    })
+                } else {
+                    res.json({
+                        errorCode: 200,
+                        msg: "send success"
+                    })
+                }
+            })
+            dynamoDB.put(param, (err, data) => {
+                if (err) { res.json({ errorCode: 500 }) } else { res.json({ errorCode: 200 }) }
+            })
+        }
     })
 })
 module.exports = router;

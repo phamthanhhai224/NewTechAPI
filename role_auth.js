@@ -11,7 +11,7 @@ module.exports = function(req, res, next) {
     let param = {
         TableName: "users",
         Key: {
-            "user_id": req.body.user_id
+            "user_id": req.user.user_id
         }
     }
     dynamoDB.get(param, (err, data) => {

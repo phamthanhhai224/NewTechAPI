@@ -6,12 +6,11 @@ module.exports = function(req, res, next) {
     })
     try {
         const verified = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
-
-        req.body = verified
+        req.user = verified
         next()
     } catch (err) {
         res.json({
-            errorCode: 401 //Token khong hop le
+            errorCode: 401 //Token khong hop le hoac khong co token
         })
     }
 }
