@@ -79,11 +79,11 @@ router.delete('/:user_id', (req, res) => {
     des: reset old password with new randomize password 
     route : users/reset
 */
-router.post('/reset', (req, res) => {
+router.post('/reset/:user_id', (req, res) => {
     let param = {
         TableName: "users",
         Key: {
-            user_id: req.body.user_id
+            user_id: req.params.user_id
         }
     }
     dynamoDB.get(param, (err, data) => {

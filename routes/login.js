@@ -11,6 +11,10 @@ let awsConfig = {
 aws.config.update(awsConfig);
 const dynamoDB = new aws.DynamoDB.DocumentClient();
 router.post('/', (req, res) => {
+        logIn(req, res)
+    })
+    //Admin login
+function logIn(req, res) {
     let param = {
         TableName: "users",
         KeyConditionExpression: "#user_id= :user_id",
@@ -41,5 +45,5 @@ router.post('/', (req, res) => {
 
         }
     })
-})
+}
 module.exports = router;
