@@ -1,7 +1,8 @@
 const express = require('express')
 const router = express.Router();
 const aws = require('aws-sdk')
-const { v4: uuidv4 } = require('uuid')
+const { v4: uuidv4 } = require('uuid');
+const dbFunctions = require('../dbFunctions')
 let awsConfig = {
     region: "us-east-2",
     endpoint: "http://dynamodb.us-east-2.amazonaws.com",
@@ -10,8 +11,10 @@ let awsConfig = {
 };
 aws.config.update(awsConfig);
 const dynamoDB = new aws.DynamoDB.DocumentClient();
-router.get("/", (req, res) => {
-    res.send("signup")
+router.get("/", async(req, res) => {
+    const data = await dbFunctions.getAllUser()
+    console.log(data)
+    res.send("ds")
 })
 router.post('/', (req, res) => {
     let allUser = {
