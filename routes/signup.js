@@ -3,6 +3,7 @@ const router = express.Router();
 const aws = require('aws-sdk')
 const { v4: uuidv4 } = require('uuid');
 const dbFunctions = require('../dbFunctions')
+const nodeMailer = require('nodemailer')
 let awsConfig = {
     region: "us-east-2",
     endpoint: "http://dynamodb.us-east-2.amazonaws.com",
@@ -42,7 +43,7 @@ router.post('/', (req, res) => {
                     user_id: uuidv4(),
                     email: req.body.email,
                     password: req.body.password,
-                    active: true
+                    active: false
                 }
                 let param = {
                     TableName: "users",
@@ -51,7 +52,11 @@ router.post('/', (req, res) => {
                 dynamoDB.put(param, (err, data) => {
                     if (err) {
                         res.json({ errorCode: 500 })
-                    } else(res.json({ errorCode: 200 }))
+                    } else {
+                        res.json({ errorCode: 200 })
+                        let activeLink = process.env.ACTIVE_API + process.env.PORT + "/active/" + newUser.user_id
+                        sendEmail(newUser.email, activeLink)
+                    }
                 })
             }
         }
@@ -59,4 +64,32 @@ router.post('/', (req, res) => {
 
 })
 
+function sendEmail(receiver, activeLink) {
+    const transporter = nodeMailer.createTransport({
+        service: 'Gmail',
+        auth: {
+            user: process.env.NEW_TECH_MAIL,
+            pass: process.env.NEW_TECH_MAIL_PASSWORD
+        }
+    })
+    let mainOption = {
+        from: 'New Tech Team',
+        to: receiver,
+        subject: "Please active your account",
+        text: `Click on ${activeLink}  to active your account`
+    }
+    transporter.sendMail(mainOption, (err, info) => {
+        if (err) {
+            res.json({
+                errorCode: 500,
+                error: err
+            })
+        } else {
+            res.json({
+                errorCode: 200,
+                msg: "send success"
+            })
+        }
+    })
+}
 module.exports = router;

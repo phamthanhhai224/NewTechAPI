@@ -4,7 +4,6 @@ const auth = require('../auth')
 const multer = require('multer')
 const { v4: uuidv4 } = require('uuid')
 const dbFunctions = require('../dbFunctions')
-
 let awsConfig = {
     region: "us-east-2",
     accessKeyId: process.env.AWSAccessKeyId,

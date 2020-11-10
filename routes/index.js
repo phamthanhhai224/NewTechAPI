@@ -19,6 +19,7 @@ router.post("/", (req, res) => {
         else {
             allUser = data.Items
             let found = false
+            let active = true
             allUser.forEach(user => {
                 if (user.email == req.body.email) {
                     logIn(user.user_id, req.body.password, res)
@@ -30,6 +31,7 @@ router.post("/", (req, res) => {
     })
 })
 
+
 function logIn(user_id, password, res) {
     let param = {
         TableName: "users",
@@ -39,7 +41,7 @@ function logIn(user_id, password, res) {
     }
     dynamoDB.get(param, (err, data) => { //query  user with user_id
         if (err) res.send(err)
-        if (password == data.Item.password) {
+        if (password == data.Item.password && data.Item.active) {
             user = {
                 user_id: user_id
             }

@@ -15,7 +15,7 @@ aws.config.update(awsConfig);
 const dynamoDB = new aws.DynamoDB.DocumentClient();
 router.use(verify)
 router.use(role_auth)
-    // Get all the user
+
 router.get("/", (req, res) => {
 
     let param = {

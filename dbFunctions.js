@@ -17,7 +17,7 @@ const getAllUser = async() => {
         return { error: true, data: error }
     }
 }
-const findUserById = async(id) => {
+const getUserById = async(id) => {
     try {
         let param = {
             TableName: "users",
@@ -49,8 +49,174 @@ const updateUserImage = async(user_id, location) => {
         return { error: true, data: error }
     }
 }
+const getAllFriend = async(user_id) => {
+    try {
+        let param = {
+            TableName: "users",
+            Key: {
+                user_id: user_id
+            }
+        }
+        const data = await dynamoDB.get(param).promise()
+        return { error: false, friends: data.Item.friends }
+    } catch (error) {
+        return { error: true, data: error }
+    }
+}
+const getAllFriendRequest = async(user_id) => {
+    try {
+        let param = {
+            TableName: "users",
+            Key: {
+                user_id: user_id
+            }
+        }
+        const data = await dynamoDB.get(param).promise()
+        return { error: false, request: data.Item.request, friends: data.Item.friends }
+    } catch (error) {
+        return { error: true, data: error }
+    }
+}
+const getAllFriendReceive = async(user_id) => {
+    try {
+        let param = {
+            TableName: "users",
+            Key: {
+                user_id: user_id
+            }
+        }
+        const data = await dynamoDB.get(param).promise()
+        return { error: false, receive: data.Item.receive, friends: data.Item.friends }
+    } catch (error) {
+        return { error: true, data: error }
+    }
+}
+const updateFriendAndReceive = async(user_id, newFriend, newReceive) => {
+    try {
+        let param = {
+            TableName: "users",
+            Key: {
+                user_id: user_id
+            },
+            UpdateExpression: "set receive = :newReceiveList,friends = :newFriends",
+            ExpressionAttributeValues: {
+                ":newReceiveList": newReceive,
+                ":newFriends": newFriend
+            }
+        }
+        await dynamoDB.update(param).promise()
+        return { error: false }
+    } catch (error) {
+        return { error: true, data: error }
+    }
+}
+const updateFriendAndRequest = async(user_id, newFriend, newRequest) => {
+    try {
+        let param = {
+            TableName: "users",
+            Key: {
+                user_id: user_id
+            },
+            UpdateExpression: "set #request = :newRequestList, friends = :newFriends",
+            ExpressionAttributeNames: {
+                "#request": "request"
+            },
+            ExpressionAttributeValues: {
+                ":newRequestList": newRequest,
+                ":newFriends": newFriend
+            }
+        }
+        await dynamoDB.update(param).promise()
+        return { error: false, data: data }
+    } catch (error) {
+        return { error: true, data: error }
+    }
+}
+const getAllRequestReceive = async(user_id) => {
+    try {
+        let param = {
+            TableName: "users",
+            Key: {
+                user_id: user_id
+            }
+        }
+        const data = await dynamoDB.get(param).promise()
+        return { error: false, request: data.Item.request, receive: data.Item.receive }
+    } catch (error) {
+        return { error: true, data: error }
+    }
+}
+const updateRequest = async(user_id, newRequest) => {
+    try {
+        let param = {
+            TableName: "users",
+            Key: {
+                user_id: user_id
+            },
+            UpdateExpression: "set #request = :newRequestList",
+            ExpressionAttributeNames: {
+                "#request": "request"
+            },
+            ExpressionAttributeValues: {
+                ":newRequestList": newRequest,
+            }
+        }
+        await dynamoDB.update(param).promise()
+        return { error: false, data: data }
+    } catch (error) {
+        return { error: true, data: error }
+    }
+}
+const updateReceive = async(user_id, newReceive) => {
+    try {
+        let param = {
+            TableName: "users",
+            Key: {
+                user_id: user_id
+            },
+            UpdateExpression: "set #receive = :newReceiveList",
+            ExpressionAttributeNames: {
+                "#receive": "receive"
+            },
+            ExpressionAttributeValues: {
+                ":newReceiveList": newReceive,
+            }
+        }
+        await dynamoDB.update(param).promise()
+        return { error: false, data: data }
+    } catch (error) {
+        return { error: true, data: error }
+    }
+}
+const updateFriend = async(user_id, newFriend) => {
+    try {
+        let param = {
+            TableName: "users",
+            Key: {
+                user_id: user_id
+            },
+            UpdateExpression: "set friends = :newFriends",
+            ExpressionAttributeValues: {
+                ":newFriends": newFriend
+            }
+        }
+        await dynamoDB.update(param).promise()
+        return { error: false, data: data }
+    } catch (error) {
+        return { error: true, data: error }
+    }
+}
 module.exports = {
     getAllUser,
-    findUserById,
-    updateUserImage
+    getUserById,
+    updateUserImage,
+    getAllFriend,
+    getAllFriendRequest,
+    getAllFriendReceive,
+    updateFriendAndReceive,
+    updateFriendAndRequest,
+    getAllRequestReceive,
+    updateReceive,
+    updateRequest,
+    updateFriend
 }
