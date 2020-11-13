@@ -68,10 +68,12 @@ router.get('/:id', (req, res) => {
             if (err) {
                 res.json(err)
             } else {
+                console.log(data.Item)
                 let resData = {
                     name: data.Item.name,
                     email: data.Item.email,
-                    phone_num: data.Item.phone_num
+                    phone_num: data.Item.phone_num,
+                    image: data.Item.image
                 }
                 res.json(resData)
             }

@@ -76,7 +76,7 @@ router.delete('/:user_id', (req, res) => {
 })
 
 /* method POST
-    des: reset old password with new randomize password 
+    des: reset old password with new randomize password
     route : users/reset
 */
 router.post('/reset/:user_id', (req, res) => {

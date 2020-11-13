@@ -15,12 +15,12 @@ router.use(auth)
 const dynamoDB = new aws.DynamoDB.DocumentClient();
 router.get('/', async(req, res) => {
     const allFriends = await dbFunctions.getAllFriend(req.user.user_id)
-    if (!allFriends.error) res.json({ errorCode: 200, data: allFriends.data })
+    if (!allFriends.error) res.json({ errorCode: 200, friends: allFriends.friends })
     else res.json({ errorCode: 500 })
 })
 router.get('/request', async(req, res) => {
     const allRequest = await dbFunctions.getAllFriendRequest(req.user.user_id)
-    if (!getAllFriendRequest.error) res.json({ errorCode: 200, data: allRequest.data })
+    if (!getAllFriendRequest.error) res.json({ errorCode: 200, request: allRequest.data })
     else res.json({ errorCode: 500 })
 })
 

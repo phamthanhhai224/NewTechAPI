@@ -22,6 +22,7 @@ router.post('/', (req, res) => {
         TableName: "users"
 
     }
+    console.log(req.body)
     dynamoDB.scan(allUser, (err, data) => {
         if (err) {
             res.json({ errorCode: 500 })
@@ -80,15 +81,9 @@ function sendEmail(receiver, activeLink) {
     }
     transporter.sendMail(mainOption, (err, info) => {
         if (err) {
-            res.json({
-                errorCode: 500,
-                error: err
-            })
+            console.log(err)
         } else {
-            res.json({
-                errorCode: 200,
-                msg: "send success"
-            })
+            console.log(info)
         }
     })
 }
