@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const express = require('express')
 const router = express.Router();
 const aws = require("aws-sdk");
+const dbFunction = require('../dbFunctions')
 let awsConfig = {
     region: "us-east-2",
     endpoint: "http://dynamodb.us-east-2.amazonaws.com",
@@ -30,7 +31,33 @@ router.post("/", (req, res) => {
         }
     })
 })
-
+router.post('/find', (req, res) => {
+    let param = {
+        TableName: "users"
+    }
+    dynamoDB.scan(param, (err, data) => {
+        if (err) res.json({ errorCode: 500 })
+        else {
+            allUser = data.Items
+            let found = false
+            allUser.forEach(user => {
+                if (user.email == req.body.email) {
+                    res.json({
+                        errorCode: 200,
+                        user: {
+                            user_id: user.user_id,
+                            name: user.name,
+                            image: user.image,
+                            phone_num: user.phone_num
+                        }
+                    })
+                    found = true
+                }
+            });
+            if (found === false) res.json({ errorCode: 500 })
+        }
+    })
+})
 
 function logIn(user_id, password, res) {
     let param = {

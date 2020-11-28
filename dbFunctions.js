@@ -26,7 +26,15 @@ const getUserById = async(id) => {
             }
         }
         const data = await dynamoDB.get(param).promise()
-        return ({ error: false, data: data.Item })
+        return ({
+            error: false,
+            data: {
+                user_id: data.Item.user_id,
+                name: data.Item.name,
+                image: data.Item.image,
+                phone_num: data.Item.phone_num
+            }
+        })
     } catch (error) {
         return ({ error: true, data: error })
     }
@@ -206,6 +214,7 @@ const updateFriend = async(user_id, newFriend) => {
         return { error: true, data: error }
     }
 }
+
 module.exports = {
     getAllUser,
     getUserById,
@@ -218,5 +227,5 @@ module.exports = {
     getAllRequestReceive,
     updateReceive,
     updateRequest,
-    updateFriend
+    updateFriend,
 }

@@ -66,16 +66,15 @@ router.get('/:id', (req, res) => {
         }
         dynamoDB.get(param, (err, data) => {
             if (err) {
-                res.json(err)
+                res.json({ errorCode: 500 })
             } else {
-                console.log(data.Item)
                 let resData = {
                     name: data.Item.name,
                     email: data.Item.email,
                     phone_num: data.Item.phone_num,
                     image: data.Item.image
                 }
-                res.json(resData)
+                res.json({ errorCode: 200, user: resData })
             }
         })
     })

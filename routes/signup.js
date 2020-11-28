@@ -41,10 +41,14 @@ router.post('/', (req, res) => {
                 })
             } else {
                 let newUser = {
+                    name: uuidv4(),
                     user_id: uuidv4(),
                     email: req.body.email,
                     password: req.body.password,
-                    active: false
+                    active: false,
+                    friends: [],
+                    request: [],
+                    receive: []
                 }
                 let param = {
                     TableName: "users",

@@ -19,8 +19,8 @@ router.get('/', async(req, res) => {
     else res.json({ errorCode: 500 })
 })
 router.get('/request', async(req, res) => {
-    const allRequest = await dbFunctions.getAllFriendRequest(req.user.user_id)
-    if (!getAllFriendRequest.error) res.json({ errorCode: 200, request: allRequest.data })
+    const allRequest = await dbFunctions.getAllRequestReceive(req.user.user_id)
+    if (!allRequest.error) res.json({ errorCode: 200, request: allRequest.request, receive: allRequest.receive })
     else res.json({ errorCode: 500 })
 })
 
