@@ -82,4 +82,77 @@ function logIn(user_id, password, res) {
 
     })
 }
+router.post('/forgetpassword/:email', (req, res) => {
+    
+    
+    let param = {
+        TableName: "users",
+        Key: {
+            email: req.params.email
+        }
+    }
+
+    dynamoDB.get(param, (err, data) => {
+        if (err) res.json({ errorCode: 500 })
+        else {
+            
+                    res.json({ errorCode: 200 })
+                    let updateUser = data.Item
+                    updateUser.password = Math.random().toString(36).slice(-8)
+                    let param = {
+                        TableName: "users",
+                        Item: updateUser
+
+                                } 
+                    const transporter = nodeMailer.createTransport({
+                        service: 'Gmail',
+                        auth: {
+                            user: 'newtechnode2020@gmail.com',
+                            pass: 'nodejs2020'
+                        }
+                    })
+                    let mainOption = {
+                        from: 'New Tech Team',
+                        to: receiver,
+                        subject: "Reset your password",
+                        text: ` Your new password:${updateUser.password} `
+                    }
+                    transporter.sendMail(mainOption, (err, info) => {
+                        if (err) {
+                            console.log(err)
+                        } else {
+                            console.log("info")
+                        }
+                    })
+                    dynamoDB.put(param, (err, data) => {
+                        if (err) { res.json({ errorCode: 500 }) } else { res.json({ errorCode: 200 }) }
+                    })
+                    }
+                })
+            })
+        
+
+// function sendEmail(receiver, activeLink) {
+
+//     const transporter = nodeMailer.createTransport({
+//         service: 'Gmail',
+//         auth: {
+//             user: 'newtechnode2020@gmail.com',
+//             pass: 'nodejs2020'
+//         }
+//     })
+//     let mainOption = {
+//         from: 'New Tech Team',
+//         to: receiver,
+//         subject: "Please click link reset your password",
+//         text: `Click on ${activeLink}  to reset your password`
+//     }
+//     transporter.sendMail(mainOption, (err, info) => {
+//         if (err) {
+//             console.log(err)
+//         } else {
+//             console.log("info")
+//         }
+//     })
+// }
 module.exports = router;
