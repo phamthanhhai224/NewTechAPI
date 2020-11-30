@@ -13,8 +13,8 @@ let awsConfig = {
 };
 aws.config.update(awsConfig);
 const dynamoDB = new aws.DynamoDB.DocumentClient();
-// router.use(verify)
-// router.use(role_auth)
+router.use(verify)
+router.use(role_auth)
 
 router.get("/", (req, res) => {
 
@@ -154,53 +154,53 @@ router.post('/changepassword/:user_id', (req, res) => {
         }
     })
 })
-router.post('/forgetpassword/:email', (req, res) => {
+// router.post('/forgetpassword/:email', (req, res) => {
     
     
-    let param = {
-        TableName: "users",
-        Key: {
-            email: req.params.email
-        }
-    }
+//     let param = {
+//         TableName: "users",
+//         Key: {
+//             email: req.params.email
+//         }
+//     }
 
-    let user = dynamoDB.get(param, (err, data) => {
-        if (err) res.json({ errorCode: 500 })
-        else {
-            let User = data.Item
-            dynamoDB.put(param, (err, data) => {
-                if (err) {
-                    res.json({ errorCode: 500 })
-                } else {
-                    res.json({ errorCode: 200 })
-                     let activeLink = process.env.ACTIVE_API + process.env.PORT + "/active/" + User.email
-                     sendEmail(User.email, activeLink)
-                    }
-                })
-            }
-        })
-})
-function sendEmail(receiver, activeLink) {
+//     let user = dynamoDB.get(param, (err, data) => {
+//         if (err) res.json({ errorCode: 500 })
+//         else {
+//             let User = data.Item
+//             dynamoDB.put(param, (err, data) => {
+//                 if (err) {
+//                     res.json({ errorCode: 500 })
+//                 } else {
+//                     res.json({ errorCode: 200 })
+//                      let activeLink = process.env.ACTIVE_API + process.env.PORT + "/active/" + User.email
+//                      sendEmail(User.email, activeLink)
+//                     }
+//                 })
+//             }
+//         })
+// })
+// function sendEmail(receiver, activeLink) {
 
-    const transporter = nodeMailer.createTransport({
-        service: 'Gmail',
-        auth: {
-            user: 'newtechnode2020@gmail.com',
-            pass: 'nodejs2020'
-        }
-    })
-    let mainOption = {
-        from: 'New Tech Team',
-        to: receiver,
-        subject: "Please click link reset your password",
-        text: `Click on ${activeLink}  to reset your password`
-    }
-    transporter.sendMail(mainOption, (err, info) => {
-        if (err) {
-            console.log(err)
-        } else {
-            console.log("info")
-        }
-    })
-}
+//     const transporter = nodeMailer.createTransport({
+//         service: 'Gmail',
+//         auth: {
+//             user: 'newtechnode2020@gmail.com',
+//             pass: 'nodejs2020'
+//         }
+//     })
+//     let mainOption = {
+//         from: 'New Tech Team',
+//         to: receiver,
+//         subject: "Please click link reset your password",
+//         text: `Click on ${activeLink}  to reset your password`
+//     }
+//     transporter.sendMail(mainOption, (err, info) => {
+//         if (err) {
+//             console.log(err)
+//         } else {
+//             console.log("info")
+//         }
+//     })
+// }
 module.exports = router;
